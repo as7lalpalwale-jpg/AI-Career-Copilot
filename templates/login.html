@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | AI Career Copilot</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #10172a, #25245b);
+            color: #172033;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            padding: 36px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 24px 70px #0004;
+        }
+        .logo {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            border-radius: 16px;
+            color: white;
+            background: #5b50e8;
+            font-size: 26px;
+            font-weight: bold;
+        }
+        h1 { margin: 0 0 8px; font-size: 27px; }
+        .subtitle { margin: 0 0 26px; color: #697386; line-height: 1.6; }
+        label { display: block; margin: 17px 0 8px; font-weight: 600; font-size: 14px; }
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce1eb;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+        input:focus { outline: 2px solid #c7c3ff; border-color: #5b50e8; }
+        button, .secondary-link {
+            width: 100%;
+            display: block;
+            margin-top: 20px;
+            padding: 13px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        button { border: 0; background: #5b50e8; color: white; }
+        button:hover { background: #463bd0; }
+        .secondary-link { margin-top: 12px; border: 1px solid #dedcfb; color: #5146d8; }
+        .home-link { display: block; text-align: center; margin-top: 22px; color: #697386; text-decoration: none; font-size: 14px; }
+        .message { padding: 11px 12px; margin-bottom: 12px; border-radius: 9px; background: #fff1f0; color: #a32929; font-size: 14px; }
+        .message.success { background: #eafaf0; color: #167442; }
+        .message.info { background: #eef4ff; color: #2455a5; }
+        @media (max-width: 480px) { .login-card { padding: 26px 22px; } }
+    </style>
+</head>
+<body>
+    <main class="login-card">
+        <div class="logo">AI</div>
+        <h1>Welcome back</h1>
+        <p class="subtitle">Sign in to manage your AI Career Copilot dashboard.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <label for="username">Admin username</label>
+            <input id="username" name="username" type="text"
+                   autocomplete="username" required autofocus>
+
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password"
+                   autocomplete="current-password" required>
+
+            <button type="submit">Sign In to Dashboard</button>
+        </form>
+
+        <a class="secondary-link" href="{{ url_for('setup_admin') }}">
+            Create Admin Account
+        </a>
+
+        <a class="home-link" href="{{ url_for('index') }}">← Back to Home</a>
+    </main>
+</body>
+</html>

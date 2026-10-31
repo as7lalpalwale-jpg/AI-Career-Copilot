@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Career Copilot helps you analyze your resume, identify skill gaps and prepare for your next career opportunity.">
+    <title>AI Career Copilot | Smart Resume Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="nav-container">
+        <a href="{{ url_for('index') }}" class="brand">
+            <span class="brand-logo">✦</span>
+            <span class="brand-name">Career<span>Copilot</span><small>AI-POWERED CAREER TOOLS</small></span>
+        </a>
+
+        <nav class="main-nav">
+            <a href="#home" class="nav-active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#analyzer">Resume Analyzer</a>
+            <a href="#how-it-works">How It Works</a>
+        </nav>
+
+        
+           
+<div class="nav-actions">
+    <button
+        type="button"
+        class="theme-toggle"
+        id="theme-toggle"
+        aria-label="Switch to dark mode"
+        title="Switch theme"
+    >
+        <span id="theme-icon" aria-hidden="true">☾</span>
+        <span class="theme-toggle-text" id="theme-label">Dark Mode</span>
+    </button>
+
+    <a href="{{ url_for('login') }}" class="login-link">Admin Login</a>
+    <a href="#analyzer" class="nav-cta">Analyze Resume <span>↗</span></a>
+</div>
+
+    </div>
+</header>
+
+<main>
+    <section class="hero" id="home">
+        <div class="hero-glow glow-one"></div>
+        <div class="hero-glow glow-two"></div>
+
+        <div class="hero-container">
+            <div class="hero-copy">
+                <div class="hero-badge">
+                    <span class="badge-sparkle">✦</span>
+                    SMARTER CAREER DECISIONS
+                    <span class="badge-new">AI</span>
+                </div>
+
+                <h1>Your next career move starts with a <span>smarter resume.</span></h1>
+
+                <p class="hero-description">
+                    Discover your strengths, identify missing skills and understand
+                    how well your resume matches your target job — all in one place.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#analyzer" class="button-primary">
+                        Analyze My Resume <span>→</span>
+                    </a>
+                    <a href="#how-it-works" class="button-secondary">
+                        <span class="play-icon">▷</span> How it works
+                    </a>
+                </div>
+
+                <div class="trust-row">
+                    <div class="trust-avatars">
+                        <span>A</span><span>C</span><span>+</span>
+                    </div>
+                    <div>
+                        <strong>Built for your next opportunity</strong>
+                        <p>Resume insights · Skill gap analysis · Interview prep</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="visual-orbit orbit-one"></div>
+                <div class="visual-orbit orbit-two"></div>
+
+                <div class="floating-label label-top">
+                    <span class="floating-label-icon purple-icon">✦</span>
+                    <div><strong>AI Insights</strong><small>Understand your strengths</small></div>
+                </div>
+
+                <div class="resume-preview">
+                    <div class="resume-top">
+                        <div class="resume-avatar">CV</div>
+                        <div class="resume-person">
+                            <strong>YOUR RESUME</strong>
+                            <span>Professional profile</span>
+                        </div>
+                        <span class="resume-status">PDF</span>
+                    </div>
+
+                    <div class="resume-divider"></div>
+                    <div class="resume-section-title">PROFILE SUMMARY</div>
+                    <div class="fake-line line-full"></div>
+                    <div class="fake-line line-medium"></div>
+                    <div class="fake-line line-short"></div>
+
+                    <div class="resume-section-title skills-title">CORE SKILLS</div>
+                    <div class="skill-pills">
+                        <span>Python</span><span>Problem Solving</span>
+                        <span>SQL</span><span>Communication</span>
+                    </div>
+
+                    <div class="resume-divider"></div>
+                    <div class="resume-bottom">
+                        <div><span class="check-circle">✓</span> Resume ready for review</div>
+                        <span class="mini-spark">✦</span>
+                    </div>
+                </div>
+
+                <div class="floating-label label-bottom">
+                    <div class="mini-chart">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                    <div><strong>Skill Insights</strong><small>Find your next step</small></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-bottom-line"></div>
+    </section>
+
+    <section class="benefit-strip" id="features">
+        <div class="benefit-item">
+            <span class="benefit-icon icon-purple">⌕</span>
+            <div><strong>Resume Analysis</strong><p>Understand your resume</p></div>
+        </div>
+        <div class="benefit-item">
+            <span class="benefit-icon icon-blue">◎</span>
+            <div><strong>Skill Matching</strong><p>Compare skills with a job</p></div>
+        </div>
+        <div class="benefit-item">
+            <span class="benefit-icon icon-green">↗</span>
+            <div><strong>Skill Gap Insights</strong><p>Spot areas to improve</p></div>
+        </div>
+        <div class="benefit-item">
+            <span class="benefit-icon icon-orange">✧</span>
+            <div><strong>Interview Preparation</strong><p>Practice useful questions</p></div>
+        </div>
+    </section>
+
+    <section class="analyzer-section" id="analyzer">
+        <div class="section-container">
+            <div class="section-heading">
+                <div class="section-kicker">YOUR CAREER TOOLKIT</div>
+                <h2>Turn your resume into <span>actionable insights.</span></h2>
+                <p>Upload your resume and add the job description to get started.</p>
+            </div>
+
+            {% if error %}
+            <div class="error-message" role="alert">
+                <span>!</span> {{ error }}
+            </div>
+            {% endif %}
+
+            <div class="analyzer-card">
+                <div class="analyzer-card-header">
+                    <div class="analyzer-card-icon">✦</div>
+                    <div>
+                        <h3>Resume Match Analyzer</h3>
+                        <p>Provide your resume and target job details.</p>
+                    </div>
+                    <span class="secure-label"><span>✓</span> PDF UPLOAD</span>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" class="analyzer-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="resume">Upload your resume <span class="required">*</span></label>
+                            <p class="field-hint">Choose your resume in PDF format.</p>
+
+                            <label class="upload-box" for="resume">
+                                <input type="file" id="resume" name="resume" accept=".pdf,application/pdf" required>
+                                <span class="upload-icon">↑</span>
+                                <strong id="upload-title">Click to upload your resume</strong>
+                                <span id="upload-filename">PDF files only</span>
+                                <span class="upload-browse">Browse files</span>
+                            </label>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="job_description">Target job description <span class="optional">(Optional)</span></label>
+                            <p class="field-hint">Paste the job description to compare relevant skills.</p>
+                            <textarea
+                                id="job_description"
+                                name="job_description"
+                                rows="8"
+                                placeholder="Paste the job description here...
+
+Example:
+Required skills:
+Python, Flask, SQL, communication..."
+                            >{{ job_description|default('') }}</textarea>
+                            <div class="textarea-footer">
+                                <span>More details can help provide a useful comparison.</span>
+                                <span>✦ AI Insights</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-bottom">
+                        <div class="privacy-note"><span>♢</span> Upload a PDF you are comfortable analyzing.</div>
+                        <button type="submit" class="analyze-button">
+                            Analyze My Resume <span>→</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {% if result %}
+            <section class="results-section" id="analysis-results">
+                <div class="results-heading">
+                    <div>
+                        <div class="section-kicker">ANALYSIS COMPLETE</div>
+                        <h2>Your Resume Insights</h2>
+                        <p>Results for <strong>{{ result.filename }}</strong></p>
+                    </div>
+                    <span class="result-complete">✓ Analysis ready</span>
+                </div>
+
+                <div class="result-score-card">
+                    <div class="score-ring" style="--score: {{ [100, [0, result.score|default(0)|float]|max]|min }};">
+                        <div class="score-ring-inner">
+                            <strong>{{ result.score|default(0) }}<small>%</small></strong>
+                            <span>Match score</span>
+                        </div>
+                    </div>
+                    <div class="score-summary">
+                        <h3>
+                            {% if result.has_requirements %}
+                                Your job match overview
+                            {% else %}
+                                Your resume skill overview
+                            {% endif %}
+                        </h3>
+                        <p>
+                            {% if result.has_requirements %}
+                                Review the matching skills and skill gaps below to identify
+                                areas that may need attention.
+                            {% else %}
+                                Add a job description above for a more targeted comparison
+                                with your desired role.
+                            {% endif %}
+                        </p>
+                        <div class="score-legend">
+                            <span><i class="legend-matched"></i> Matched skills: {{ result.matched|length }}</span>
+                            <span><i class="legend-missing"></i> Skills to review: {{ result.missing|length }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-grid">
+                    <div class="result-panel">
+                        <div class="result-panel-heading">
+                            <span class="result-panel-icon matched-icon">✓</span>
+                            <div><h3>Matched Skills</h3><p>Skills found in your resume</p></div>
+                            <span class="result-count">{{ result.matched|length }}</span>
+                        </div>
+                        <div class="result-tags">
+                            {% for skill in result.matched %}
+                                <span class="matched-tag">✓ {{ skill }}</span>
+                            {% else %}
+                                <p class="no-skills">No matching skills identified yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="result-panel">
+                        <div class="result-panel-heading">
+                            <span class="result-panel-icon missing-icon">＋</span>
+                            <div><h3>Skills to Review</h3><p>Potential areas for improvement</p></div>
+                            <span class="result-count">{{ result.missing|length }}</span>
+                        </div>
+                        <div class="result-tags">
+                            {% for skill in result.missing %}
+                                <span class="missing-tag">{{ skill }}</span>
+                            {% else %}
+                                <p class="no-skills">No skill gaps listed for this analysis.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-panel resume-skills-panel">
+                    <div class="result-panel-heading">
+                        <span class="result-panel-icon resume-skills-icon">▤</span>
+                        <div><h3>Skills Detected in Your Resume</h3><p>Skills extracted from the uploaded document</p></div>
+                    </div>
+                    <div class="result-tags">
+                        {% for skill in result.resume_skills %}
+                            <span class="neutral-tag">{{ skill }}</span>
+                        {% else %}
+                            <p class="no-skills">No skills were detected in the extracted resume text.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="result-panel questions-panel">
+                    <div class="result-panel-heading">
+                        <span class="result-panel-icon question-icon">?</span>
+                        <div><h3>Interview Preparation</h3><p>Questions to help you practice</p></div>
+                    </div>
+                    <ol class="question-list">
+                        {% for question in result.questions %}
+                            <li>{{ question }}</li>
+                        {% else %}
+                            <li>No interview questions available for this analysis.</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </section>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="how-section" id="how-it-works">
+        <div class="section-container">
+            <div class="section-heading">
+                <div class="section-kicker">SIMPLE PROCESS</div>
+                <h2>Three steps to <span>better preparation.</span></h2>
+                <p>Start with your resume, focus on the gaps, and prepare with confidence.</p>
+            </div>
+
+            <div class="steps-grid">
+                <article class="step-card">
+                    <span class="step-number">01</span>
+                    <div class="step-icon step-purple">↑</div>
+                    <h3>Upload Your Resume</h3>
+                    <p>Choose your PDF resume and provide the job description if you have one.</p>
+                </article>
+                <article class="step-card">
+                    <span class="step-number">02</span>
+                    <div class="step-icon step-blue">⌕</div>
+                    <h3>Review Your Insights</h3>
+                    <p>See your match score, matched skills and potential skill gaps.</p>
+                </article>
+                <article class="step-card">
+                    <span class="step-number">03</span>
+                    <div class="step-icon step-green">↗</div>
+                    <h3>Prepare Your Next Move</h3>
+                    <p>Use your results and interview questions to guide your preparation.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta">
+        <div class="final-cta-content">
+            <div class="section-kicker">YOUR NEXT CHAPTER STARTS HERE</div>
+            <h2>Make every application <span>count.</span></h2>
+            <p>Understand your resume better and take the next step in your career journey.</p>
+            <a href="#analyzer" class="button-primary">Start Resume Analysis <span>→</span></a>
+        </div>
+        <div class="cta-decoration">✦</div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a href="{{ url_for('index') }}" class="footer-brand"><span>✦</span> CareerCopilot</a>
+    <p>Smart tools for your career journey.</p>
+    <span>© 2026 AI Career Copilot</span>
+</footer>
+
+
+<script>
+    // Resume upload filename
+    const resumeInput = document.getElementById("resume");
+    const uploadTitle = document.getElementById("upload-title");
+    const uploadFilename = document.getElementById("upload-filename");
+
+    if (resumeInput) {
+        resumeInput.addEventListener("change", function () {
+            const file = this.files && this.files[0];
+
+            if (file) {
+                uploadTitle.textContent = "Resume selected";
+                uploadFilename.textContent = file.name;
+            } else {
+                uploadTitle.textContent = "Click to upload your resume";
+                uploadFilename.textContent = "PDF files only";
+            }
+        });
+    }
+
+    // Restore saved theme before displaying the page
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeIcon = document.getElementById("theme-icon");
+    const themeLabel = document.getElementById("theme-label");
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+
+        const isDark = theme === "dark";
+
+        if (themeIcon) {
+            themeIcon.textContent = isDark ? "☀" : "☾";
+        }
+
+        if (themeLabel) {
+            themeLabel.textContent = isDark ? "Light Mode" : "Dark Mode";
+        }
+
+        if (themeToggle) {
+            themeToggle.setAttribute(
+                "aria-label",
+                isDark ? "Switch to light mode" : "Switch to dark mode"
+            );
+        }
+    }
+
+    let savedTheme = "light";
+
+    try {
+        savedTheme = localStorage.getItem("career-copilot-theme") || "light";
+    } catch (error) {
+        savedTheme = "light";
+    }
+
+    applyTheme(savedTheme === "dark" ? "dark" : "light");
+
+    if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+            const currentTheme =
+                document.documentElement.getAttribute("data-theme") || "light";
+
+            const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+            applyTheme(nextTheme);
+
+            try {
+                localStorage.setItem("career-copilot-theme", nextTheme);
+            } catch (error) {
+                // Theme still works if browser storage is unavailable.
+            }
+        });
+    }
+
+    // Scroll to results after resume analysis
+    if (window.location.hash === "#analysis-results") {
+        document.getElementById("analysis-results")?.scrollIntoView();
+    }
+</script>
+
+</body>
+</html>

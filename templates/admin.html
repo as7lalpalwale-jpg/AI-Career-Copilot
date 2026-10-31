@@ -1,0 +1,376 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | AI Career Copilot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <a href="{{ url_for('index') }}" class="brand">
+            <span class="brand-icon">✦</span>
+            <span>Career<span class="brand-light">Copilot</span>
+                <small>ADMIN CONSOLE</small>
+            </span>
+        </a>
+
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="side-nav">
+            <a href="{{ url_for('admin') }}" class="nav-link active">
+                <span class="nav-icon">▦</span> Dashboard
+            </a>
+            <a href="{{ url_for('index') }}" class="nav-link">
+                <span class="nav-icon">▤</span> Resume Analyzer
+            </a>
+            <a href="#recent-activity" class="nav-link">
+                <span class="nav-icon">◷</span> Analysis History
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="help-card">
+                <div class="help-symbol">✦</div>
+                <strong>AI Career Copilot</strong>
+                <p>Your career insights, all in one place.</p>
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-link">
+                <span>↪</span> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="mobile-brand">✦ CareerCopilot</div>
+            <div class="breadcrumb">Workspace <span>/</span> Dashboard</div>
+            <div class="profile">
+                <div class="status-dot"></div>
+                <div class="profile-avatar">
+                    {{ (admin_username or 'A')[0]|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ admin_username or 'Administrator' }}</strong>
+                    <span>Administrator</span>
+                </div>
+            </div>
+        </header>
+
+        <section class="page-content">
+            <div class="welcome-row">
+                <div>
+                    <div class="eyebrow">OVERVIEW</div>
+                    <h1>Dashboard Overview</h1>
+                    <p class="page-subtitle">
+                        Monitor resume analyses and career matching activity.
+                    </p>
+                </div>
+                <a class="primary-button" href="{{ url_for('index') }}">
+                    <span>＋</span> New Analysis
+                </a>
+            </div>
+
+            <div class="welcome-banner">
+                <div class="banner-content">
+                    <div class="banner-tag">YOUR CAREER INTELLIGENCE HUB</div>
+                    <h2>Welcome back, {{ admin_username or 'Admin' }}! 👋</h2>
+                    <p>
+                        Here's an overview of your platform's resume analysis
+                        activity and performance.
+                    </p>
+                </div>
+                <div class="banner-art" aria-hidden="true">
+                    <div class="art-circle circle-one"></div>
+                    <div class="art-circle circle-two"></div>
+                    <div class="art-document">
+                        <div class="art-line long"></div>
+                        <div class="art-line"></div>
+                        <div class="art-line short"></div>
+                        <div class="art-check">✓</div>
+                    </div>
+                    <div class="art-spark">✦</div>
+                </div>
+            </div>
+
+            <div class="section-heading">
+                <div>
+                    <h2>Platform Statistics</h2>
+                    <p>Key metrics at a glance</p>
+                </div>
+                <span class="live-badge"><span></span> LIVE OVERVIEW</span>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon purple">▤</div>
+                        <span class="stat-label">ALL TIME</span>
+                    </div>
+                    <div class="stat-number">{{ total_analyses }}</div>
+                    <div class="stat-title">Total Analyses</div>
+                    <div class="stat-foot">Resume analysis records</div>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon blue">◎</div>
+                        <span class="stat-label">PERFORMANCE</span>
+                    </div>
+                    <div class="stat-number">
+                        {{ "%.1f"|format(average_score|default(0)|float) }}<span class="number-unit">%</span>
+                    </div>
+                    <div class="stat-title">Average Match Score</div>
+                    <div class="progress-track">
+                        <progress class="progress-fill" min="0" max="100" value="{{ [100, [0, average_score|default(0)|float]|max]|min }}">{{ average_score|default(0) }}%</progress>
+                    </div>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon green">✓</div>
+                        <span class="stat-label">SYSTEM</span>
+                    </div>
+                    <div class="stat-number">Active</div>
+                    <div class="stat-title">Platform Status</div>
+                    <div class="stat-foot"><span class="online-dot"></span> Application is running</div>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <div class="stat-icon orange">♙</div>
+                        <span class="stat-label">ACCESS</span>
+                    </div>
+                    <div class="stat-number">{{ admins|length }}</div>
+                    <div class="stat-title">Admin Accounts</div>
+                    <div class="stat-foot">Registered administrators</div>
+                </article>
+            </div>
+
+            <div class="content-grid">
+                <section class="panel" id="recent-activity">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Recent Resume Analyses</h2>
+                            <p>Latest files processed by the platform</p>
+                        </div>
+                        <span class="table-count">{{ recent_analyses|length }} records</span>
+                    </div>
+
+                    
+{% if total_pages > 1 %}
+<div class="pagination">
+    <div class="pagination-info">
+        Page {{ page }} of {{ total_pages }}
+        ({{ filtered_total }} matching records)
+    </div>
+
+    <div class="pagination-buttons">
+        {% if page > 1 %}
+        <a
+            class="pagination-link"
+            href="{{ url_for('admin', page=page-1, search=search, min_score=min_score, max_score=max_score) }}"
+        >← Previous</a>
+        {% endif %}
+
+        {% for page_num in range(1, total_pages + 1) %}
+        <a
+            class="pagination-link {% if page_num == page %}active{% endif %}"
+            href="{{ url_for('admin', page=page_num, search=search, min_score=min_score, max_score=max_score) }}"
+        >{{ page_num }}</a>
+        {% endfor %}
+
+        {% if page < total_pages %}
+        <a
+            class="pagination-link"
+            href="{{ url_for('admin', page=page+1, search=search, min_score=min_score, max_score=max_score) }}"
+        >Next →</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+
+                  
+<form method="GET" action="{{ url_for('admin') }}" class="analysis-filters">
+    <div class="filter-field">
+        <label for="search">Search Resume</label>
+        <input
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Enter resume filename..."
+            value="{{ search|default('') }}"
+        >
+    </div>
+
+    <div class="filter-field">
+        <label for="min_score">Minimum Score</label>
+        <input
+            type="number"
+            id="min_score"
+            name="min_score"
+            min="0"
+            max="100"
+            placeholder="0"
+            value="{{ min_score|default('') }}"
+        >
+    </div>
+
+    <div class="filter-field">
+        <label for="max_score">Maximum Score</label>
+        <input
+            type="number"
+            id="max_score"
+            name="max_score"
+            min="0"
+            max="100"
+            placeholder="100"
+            value="{{ max_score|default('') }}"
+        >
+    </div>
+
+    <button type="submit" class="filter-btn">Apply Filters</button>
+
+    <a href="{{ url_for('admin') }}" class="reset-btn">Reset</a>
+</form>
+
+
+<a
+    href="{{ url_for(
+        'export_admin_csv',
+        search=search,
+        min_score=min_score,
+        max_score=max_score
+    ) }}"
+    class="export-csv-btn"
+>
+    <span aria-hidden="true">↓</span>
+    Export CSV
+</a>
+
+
+<a
+    href="{{ url_for(
+        'export_admin_pdf',
+        search=search,
+        min_score=min_score,
+        max_score=max_score
+    ) }}"
+    class="export-pdf-btn"
+>
+    <span aria-hidden="true">↓</span>
+    Export PDF
+</a>
+
+
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>RESUME FILE</th>
+                                    <th>MATCH SCORE</th>
+                                    <th>DATE</th>
+                                    <th>STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in recent_analyses %}
+                                <tr>
+                                   
+<td>
+    <div class="file-cell">
+        <div class="file-icon">PDF</div>
+        <div class="file-name">
+            <strong>{{ item['filename'] }}</strong>
+            <span>Resume analysis</span>
+            <a
+                class="view-details-btn"
+                href="{{ url_for('admin_analysis_detail', analysis_id=item['id']) }}"
+            >
+                View Details →
+            </a>
+        </div>
+    </div>
+</td>
+
+                                    <td>
+                                        <div class="score-cell">
+                                            <strong>{{ item['match_score'] }}%</strong>
+                                            <div class="mini-track">
+                                                <progress class="mini-progress" min="0" max="100" value="{{ [100, [0, item['match_score']|float]|max]|min }}">{{ item['match_score'] }}%</progress>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="date-cell">{{ item['created_at'] }}</td>
+                                    <td><span class="status-badge">Completed</span></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4">
+                                        <div class="empty-state">
+                                            <div class="empty-icon">▤</div>
+                                            <strong>No analyses yet</strong>
+                                            <p>Upload a resume to see activity here.</p>
+                                            <a href="{{ url_for('index') }}">Analyze a resume →</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <aside class="panel admin-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h2>Admin Accounts</h2>
+                            <p>Platform administrators</p>
+                        </div>
+                        <div class="admin-count">{{ admins|length }}</div>
+                    </div>
+
+                    <div class="admin-list">
+                        {% for account in admins %}
+                        <div class="admin-row">
+                            <div class="admin-avatar">
+                                {{ (account['username'] or 'A')[0]|upper }}
+                            </div>
+                            <div class="admin-details">
+                                <strong>{{ account['username'] }}</strong>
+                                <span>Administrator</span>
+                            </div>
+                            {% if account['username'] == admin_username %}
+                                <span class="you-badge">YOU</span>
+                            {% else %}
+                                <span class="account-dot"></span>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <p class="muted-text">No administrator accounts found.</p>
+                        {% endfor %}
+                    </div>
+
+                    <div class="security-note">
+                        <span class="security-icon">♢</span>
+                        <div>
+                            <strong>Secure access</strong>
+                            <p>Administrator pages are protected by login.</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <footer class="page-footer">
+                <span>© 2026 AI Career Copilot</span>
+                <span>Built for smarter career decisions <span class="footer-star">✦</span></span>
+            </footer>
+        </section>
+    </main>
+</div>
+</body>
+</html>
